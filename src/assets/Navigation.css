@@ -1,0 +1,31 @@
+/* Minor alignment and spacing tweaks for the navbar */
+.navbar {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.navbar .navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar .navbar-brand span {
+  line-height: 1;
+}
+
+/* Ensure dropdown aligns perfectly under the username link */
+#user-dropdown .dropdown-menu {
+  margin-top: 8px;
+  border-radius: 10px;
+}
+
+/* Slight opacity on hover for top-right links */
+.navbar .nav-link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.navbar .nav-link:hover {
+  opacity: 0.9;
+}

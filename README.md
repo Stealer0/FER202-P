@@ -14,6 +14,19 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
+## Feature flags
+
+This app includes a simple feature flag system in `src/config/featureFlags.js`.
+
+- GPT-5 flag: `enableGpt5` (default: on)
+- Toggle via environment variable: `REACT_APP_ENABLE_GPT5=true|false`
+
+Usage notes (Create React App):
+
+- Create a `.env` file in the project root and add `REACT_APP_ENABLE_GPT5=false` to disable GPT-5 at build time.
+- Restart `npm start` after changing `.env`.
+- The current AI configuration can be inspected via `getAIConfig()` in `src/config/ai.js`. It selects `model: 'gpt-5'` when the flag is on, otherwise `'gpt-4.1'`.
+
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.\
