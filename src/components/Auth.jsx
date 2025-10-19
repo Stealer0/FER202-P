@@ -18,8 +18,8 @@ export default function Auth({ onLogin }) {
     // register form state
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
-    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
     useEffect(() => {
         // If user is already logged in, call onLogin immediately
@@ -30,7 +30,11 @@ export default function Auth({ onLogin }) {
     }, [onLogin]);
 
     const canLogin = useMemo(() => loginUsername.trim() && loginPassword.trim(), [loginUsername, loginPassword]);
-    const canRegister = useMemo(() => name.trim() && phone.trim() && username.trim() && password.trim(), [name, phone, username, password]);
+    const passwordsMatch = useMemo(() => password === confirmPassword, [password, confirmPassword]);
+    const canRegister = useMemo(
+        () => name.trim() && phone.trim() && password.trim() && confirmPassword.trim() && passwordsMatch,
+        [name, phone, password, confirmPassword, passwordsMatch]
+    );
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -61,12 +65,13 @@ export default function Auth({ onLogin }) {
         setError('');
         setLoading(true);
         try {
-            // check duplicate username
-            const exist = await axios.get(`${API_BASE}/users`, { params: { username } });
+            // Use phone as username; check duplicate by username (phone)
+            const registerUsername = phone;
+            const exist = await axios.get(`${API_BASE}/users`, { params: { username: registerUsername } });
             if (Array.isArray(exist.data) && exist.data.length > 0) {
                 setError('Tên đăng nhập đã tồn tại.');
             } else {
-                const payload = { name, phone, username, password, role: 'user' };
+                const payload = { name, phone, username: registerUsername, password, role: 'user' };
                 const { data: user } = await axios.post(`${API_BASE}/users`, payload);
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 if (onLogin) onLogin(user);
@@ -124,13 +129,20 @@ export default function Auth({ onLogin }) {
                                 <Form.Label>Số điện thoại</Form.Label>
                                 <Form.Control value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="VD: 09xxxxxx" />
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="reg-username">
-                                <Form.Label>Tên đăng nhập</Form.Label>
-                                <Form.Control value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Chọn tên đăng nhập" />
-                            </Form.Group>
                             <Form.Group className="mb-3" controlId="reg-password">
                                 <Form.Label>Mật khẩu</Form.Label>
                                 <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Tạo mật khẩu" />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="reg-password-confirm">
+                                <Form.Label>Nhập lại mật khẩu</Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    placeholder="Nhập lại mật khẩu"
+                                    isInvalid={!!confirmPassword && !passwordsMatch}
+                                />
+                                <Form.Control.Feedback type="invalid">Mật khẩu nhập lại không trùng khớp.</Form.Control.Feedback>
                             </Form.Group>
                             <Button type="submit" className="btn-auth-success" disabled={!canRegister || loading}>
                                 {loading ? <Spinner size="sm" animation="border" /> : 'Tạo tài khoản'}
