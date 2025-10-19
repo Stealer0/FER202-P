@@ -22,7 +22,22 @@ export default function Auth({ onLogin }) {
     else setTab('login');
   }, [location.pathname]);
 
-  const validatePhone = (phone) => /^\d{10,11}$/.test(String(phone).trim());
+  // Helpers
+  const normalizePhone = (phone) => String(phone || '').replace(/\D/g, '');
+  const validatePhone = (phone) => /^\d{10,11}$/.test(normalizePhone(phone));
+  const validatePasswordMatch = (pw, confirm) => String(pw || '') === String(confirm || '');
+
+  // Check if a phone already exists in DB (json-server filter)
+  const phoneExists = async (phone) => {
+    const p = normalizePhone(phone);
+    try {
+      const { data } = await axios.get(`${API_BASE_URL}/users`, { params: { phone: p } });
+      return Array.isArray(data) && data.length > 0;
+    } catch (_) {
+      // Bubble up network errors to caller
+      throw _;
+    }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -30,9 +45,12 @@ export default function Auth({ onLogin }) {
     if (!validatePhone(loginData.phone)) return setError('Số điện thoại không hợp lệ');
     setLoading(true);
     try {
-      const { data: users } = await axios.get(`${API_BASE_URL}/users`);
-      const user = users.find(
-        (u) => String(u.phone) === String(loginData.phone).trim() && String(u.password) === String(loginData.password).trim()
+      // Query by phone first, then compare password locally
+      const { data: users } = await axios.get(`${API_BASE_URL}/users`, {
+        params: { phone: normalizePhone(loginData.phone) },
+      });
+      const user = (users || []).find(
+        (u) => String(u.password) === String(loginData.password).trim()
       );
       if (!user) return setError('Sai số điện thoại hoặc mật khẩu');
       onLogin({ id: user.id, phone: user.phone, role: user.role || 'user', name: user.name || 'Người dùng' });
@@ -47,18 +65,15 @@ export default function Auth({ onLogin }) {
     e.preventDefault();
     setError('');
     if (!registerData.name.trim()) return setError('Vui lòng nhập họ tên');
-    if (!validatePhone(registerData.phone)) return setError('Số điện thoại không hợp lệ');
+    if (!validatePhone(registerData.phone)) return setError('Số điện thoại không hợp lệ (10-11 số)');
     if (!registerData.password || registerData.password.length < 3) return setError('Mật khẩu tối thiểu 3 ký tự');
-    if (!registerData.confirmPassword || registerData.confirmPassword !== registerData.password) {
-      return setError('Xác nhận mật khẩu không khớp');
-    }
+    if (!validatePasswordMatch(registerData.password, registerData.confirmPassword)) return setError('Xác nhận mật khẩu không khớp');
     setLoading(true);
     try {
-      const { data: users } = await axios.get(`${API_BASE_URL}/users`);
-      const existed = users.find((u) => String(u.phone) === String(registerData.phone).trim());
+      const existed = await phoneExists(registerData.phone);
       if (existed) return setError('Số điện thoại đã được đăng ký');
       const newUser = {
-        phone: String(registerData.phone).trim(),
+        phone: normalizePhone(registerData.phone),
         password: String(registerData.password).trim(),
         name: registerData.name.trim(),
         role: 'user',
