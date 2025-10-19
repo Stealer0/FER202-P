@@ -1,0 +1,132 @@
+﻿/* Modern professional styling for Auth component */
+
+/* Background gradient and centering */
+.auth-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  overflow: hidden;
+}
+
+.auth-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url('../assets/bg-auth.svg') center/cover no-repeat fixed;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.auth-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(1200px 600px at 10% 0%, rgba(232, 241, 255, 0.9) 0%, rgba(247, 251, 255, 0.85) 50%, rgba(255, 255, 255, 0.9) 100%);
+}
+
+.auth-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Card refinement */
+.auth-card {
+  width: 100%;
+  max-width: 560px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(16, 24, 40, 0.08);
+  overflow: hidden;
+  background: #fff;
+}
+
+.auth-card .card-header {
+  background: linear-gradient(135deg, #2563eb 0%, #22c55e 100%);
+  color: #fff;
+  padding: 18px 20px;
+}
+
+.auth-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.auth-body {
+  padding: 24px;
+}
+
+/* Tabs */
+.auth-tabs.nav-tabs .nav-link {
+  border: none;
+  color: #64748b;
+  font-weight: 600;
+  padding: 10px 12px;
+  margin-right: 8px;
+  border-radius: 8px;
+}
+
+.auth-tabs.nav-tabs .nav-link.active {
+  color: #0f172a;
+  background: #eef2ff;
+}
+
+/* Form */
+.auth-form .form-label {
+  font-size: 0.95rem;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.auth-form .form-control {
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+}
+
+.auth-form .form-control:focus {
+  background: #fff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Buttons */
+.btn-auth-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #22c55e 100%);
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.btn-auth-success {
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.btn-auth-primary:disabled,
+.btn-auth-success:disabled {
+  opacity: 0.75;
+}
+
+/* Status */
+.auth-alert {
+  border-radius: 10px;
+}
+
+/* Small tweaks */
+.muted {
+  color: #64748b;
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    max-width: 100%;
+  }
+}
