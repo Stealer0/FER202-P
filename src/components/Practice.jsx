@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, Badge, Button, Card, Col, Form, Row } from 'react-bootstrap';
-import { recordAttempt } from '../utils/practiceHistory';
-import { recordAttemptServer } from '../services/practiceHistoryService';
+import { API_BASE } from '../config/api';
 
 function PracticeMode({ questions }) {
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -69,24 +68,33 @@ function PracticeMode({ questions }) {
             total: prev.total + 1,
         }));
 
-        // persist attempt to server with local fallback
+        // Persist attempt: try server endpoint if available, otherwise store locally in localStorage
         try {
             const user = JSON.parse(localStorage.getItem('currentUser')) || {};
-            const userId = user.id;
+            const userId = user?.id;
+            const attempt = {
+                questionId: currentQ.id,
+                category: currentQ.category ?? 'Khác',
+                selected: selectedAnswer,
+                correctAnswer: currentQ.correctAnswer,
+                isCorrect,
+                timestamp: new Date().toISOString(),
+            };
             if (userId) {
-                const attempt = {
-                    questionId: currentQ.id,
-                    category: currentQ.category ?? 'Khác',
-                    selected: selectedAnswer,
-                    correctAnswer: currentQ.correctAnswer,
-                    isCorrect,
-                    timestamp: new Date().toISOString(),
-                };
                 (async () => {
                     try {
-                        await recordAttemptServer(userId, attempt);
-                    } catch {
-                        recordAttempt(String(userId), attempt);
+                        // Optional: try POST to json-server if a collection exists
+                        await fetch(`${API_BASE}/practiceAttempts`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ userId, ...attempt }),
+                        });
+                    } catch (_) {
+                        // fallback to localStorage per-user
+                        const key = `practiceAttempts:${userId}`;
+                        const arr = (() => { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } })();
+                        arr.push(attempt);
+                        localStorage.setItem(key, JSON.stringify(arr));
                     }
                 })();
             }

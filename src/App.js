@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Auth from './components/Auth';
 import Dashboard from './pages/Dashboard';
-import Profile from './pages/Profile';
-import Settings from './pages/Settings';
+import PracticePage from './pages/Practice';
 import Navigation from './components/Navigation';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/App.css';
@@ -12,7 +11,7 @@ import './assets/App.css';
 const AppContent = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   // Ẩn Navigation trên các trang đăng nhập và đăng ký
   const hideNavigation = ['/login', '/register'].includes(location.pathname);
 
@@ -31,8 +30,7 @@ const AppContent = () => {
         <Route path="/login" element={<Auth onLogin={handleLogin} />} />
         <Route path="/register" element={<Auth onLogin={handleLogin} />} />
         <Route path="/dashboard" element={<DashboardWrapper />} />
-        <Route path="/profile" element={<ProtectedRoute component={<Profile />} />} />
-        <Route path="/settings" element={<ProtectedRoute component={<Settings />} />} />
+        <Route path="/practice" element={<ProtectedRoute component={<PracticePage />} />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </div>
@@ -48,7 +46,16 @@ function DashboardWrapper() {
     if (!user) navigate('/login', { replace: true });
   }, [user, navigate]);
   if (!user) return null;
-  return <Dashboard user={user} onNavigate={() => {}} onSuggestQuestion={() => {}} />;
+  const onNavigate = (where) => {
+    switch (where) {
+      case 'practice':
+        navigate('/practice');
+        break;
+      default:
+        break;
+    }
+  };
+  return <Dashboard user={user} onNavigate={onNavigate} onSuggestQuestion={() => { }} />;
 }
 
 // Generic protected route wrapper for simple pages
