@@ -108,3 +108,79 @@ function QuestionSuggestionForm({ questions = [], showModal, setShowModal }) {
             setLoading(false)
         }
     }
+    return (
+        <div>
+
+
+
+            <Modal show={showModal} onHide={handleCloseModal} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Đề xuất câu hỏi mới</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+
+
+
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Câu hỏi</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                value={formData.question}
+                                onChange={(e) => setFormData({ ...formData, question: e.target.value })}
+                                required
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Danh mục</Form.Label>
+                            <Form.Select
+                                value={showCustomCategory ? "custom" : formData.category}
+                                onChange={(e) => {
+                                    if (e.target.value === "custom") {
+                                        setShowCustomCategory(true)
+                                        setFormData({ ...formData, category: "" })
+                                    } else {
+                                        setShowCustomCategory(false)
+                                        setCustomCategory("")
+                                        setFormData({ ...formData, category: e.target.value })
+                                    }
+                                }}
+                                required={!showCustomCategory}
+                            >
+                                <option value="">-- Chọn danh mục --</option>
+                                {existingCategories.map((category) => (
+                                    <option key={category} value={category}>
+                                        {category}
+                                    </option>
+                                ))}
+                                <option value="custom">➕ Thêm danh mục mới</option>
+                            </Form.Select>
+                            {showCustomCategory && (
+                                <div className="mt-2">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Nhập tên danh mục mới"
+                                        value={customCategory}
+                                        onChange={(e) => {
+                                            setCustomCategory(e.target.value)
+                                            setFormData({ ...formData, category: e.target.value })
+                                        }}
+                                        required
+                                    />
+                                    <Button
+                                        variant="outline-secondary"
+                                        size="sm"
+                                        className="mt-2"
+                                        onClick={() => {
+                                            setShowCustomCategory(false)
+                                            setCustomCategory("")
+                                            setFormData({ ...formData, category: "" })
+                                        }}
+                                    >
+                                        Hủy danh mục tùy chỉnh
+                                    </Button>
+                                </div>
+                            )}
+                        </Form.Group>
