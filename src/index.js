@@ -1,18 +1,13 @@
-import React, { createContext } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './assets/index.css';
+import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { getFeatureFlags } from './config/featureFlags';
-
-export const FeatureFlagsContext = createContext(getFeatureFlags());
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <FeatureFlagsContext.Provider value={getFeatureFlags()}>
-      <App />
-    </FeatureFlagsContext.Provider>
+    <App />
   </React.StrictMode>
 );
 
