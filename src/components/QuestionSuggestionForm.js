@@ -184,3 +184,65 @@ function QuestionSuggestionForm({ questions = [], showModal, setShowModal }) {
                                 </div>
                             )}
                         </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Ảnh minh họa (tùy chọn)</Form.Label>
+                            <Form.Control type="file" accept="image/*" onChange={handleImageUpload} />
+                            {imagePreview && (
+                                <div className="mt-2">
+                                    <img
+                                        src={imagePreview || "/placeholder.svg"}
+                                        alt="Preview"
+                                        style={{ maxWidth: "200px", maxHeight: "200px" }}
+                                    />
+                                    <br />
+                                    <Button variant="outline-danger" size="sm" className="mt-2" onClick={handleRemoveImage}>
+                                        Xóa ảnh
+                                    </Button>
+                                </div>
+                            )}
+                        </Form.Group>
+
+                        {formData.options.map((option, index) => (
+                            <Form.Group key={index} className="mb-3">
+                                <Form.Label>Đáp án {index + 1}</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={option}
+                                    onChange={(e) => handleOptionChange(index, e.target.value)}
+                                    required
+                                />
+                            </Form.Group>
+                        ))}
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Đáp án đúng</Form.Label>
+                            <Form.Select
+                                value={formData.correctAnswer}
+                                onChange={(e) => setFormData({ ...formData, correctAnswer: Number.parseInt(e.target.value) })}
+                            >
+                                {formData.options.map((option, index) => (
+                                    <option key={index} value={index}>
+                                        {index + 1} - {option}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                        </Form.Group>
+                        {error && <Alert variant="danger">{error}</Alert>}
+                        {success && <Alert variant="success">Đã gửi đề xuất thành công! Câu hỏi sẽ được duyệt bởi quản trị viên.</Alert>}
+
+                        <div className="d-flex justify-content-end">
+                            <Button variant="secondary" onClick={handleCloseModal} className="me-2">
+                                Hủy
+                            </Button>
+                            <Button variant="primary" type="submit" disabled={loading}>
+                                {loading ? "Đang gửi..." : "Gửi đề xuất"}
+                            </Button>
+                        </div>
+                    </Form>
+                </Modal.Body>
+            </Modal>
+        </div>
+    )
+}
+
+export default QuestionSuggestionForm 
