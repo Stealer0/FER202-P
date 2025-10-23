@@ -697,6 +697,7 @@
       "id": "1",
       "username": "admin",
       "password": "admin",
+      "phone": "0123456789",
       "role": "admin",
       "name": "Admin"
     },
@@ -704,6 +705,7 @@
       "id": "2",
       "username": "user1",
       "password": "user1",
+      "phone": "0987654321",
       "role": "user",
       "name": "User 1"
     },
@@ -711,6 +713,7 @@
       "id": "1521",
       "username": "fdg",
       "password": "sfg",
+      "phone": "123456789",
       "name": "ádfga",
       "role": "user"
     },
@@ -718,6 +721,7 @@
       "id": "7e1e",
       "username": "123",
       "password": "123",
+      "phone": "0123456789",
       "name": "Anh",
       "role": "user"
     },
@@ -726,6 +730,13 @@
       "username": "1234",
       "password": "123",
       "name": "Anh",
+      "role": "user"
+    },
+    {
+      "id": "f41f",
+      "phone": "0968065135",
+      "password": "12345678",
+      "name": "Lều Trung Tới",
       "role": "user"
     }
   ],
