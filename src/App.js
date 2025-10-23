@@ -6,6 +6,7 @@ import PracticePage from './pages/Practice';
 import Navigation from './components/Navigation';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/App.css';
+import ExamHistory from './components/ExamHistory';
 
 // Component để kiểm tra có nên hiển thị Navigation hay không
 const AppContent = () => {
@@ -32,6 +33,7 @@ const AppContent = () => {
         <Route path="/dashboard" element={<DashboardWrapper />} />
         <Route path="/practice" element={<ProtectedRoute component={<PracticePage />} />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path='/history' element={<ExamHistory />} />
       </Routes>
     </div>
   );
